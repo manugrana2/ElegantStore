@@ -76,14 +76,16 @@ function getView(option){
 }
 
 // Cambiar view
-function viewExchange(newView){
-    newView='newArticle';
+function viewExchange(url){
     // Ocultar vista acutal si alguna
+    console.log('Url given is '+url);
     if(currentOption){
-        let currentView = getView(currentOption);
-        if(currentOption !=newView){
-            $("."+currentView).toggleClass('hide');
-            $(".newArticleView").toggleClass('hide') ? currentOption='newArticle':'';
+        let view = getView(url);
+        if(currentOption !=view){
+            console.log('The current view was '+currentOption);
+            console.log('View changed to '+view);
+            $("."+currentOption).toggleClass('hide');
+            $("."+view).toggleClass('hide') ? currentOption=view:'';
         }
         
     }
@@ -105,8 +107,9 @@ $("body").click(function () {
             $(".welcome").toggleClass('hide');
         }
     }
-    console.log('Currrent view is '+ currentOption);
 });
+
+// Menu Lateral Eventos
 
 // Añadir nuevo  artículo
 $("#newArticle").click(function () {
@@ -114,6 +117,35 @@ $("#newArticle").click(function () {
     url= $(this).attr('id');
     viewExchange(url);
 
+});
+
+  // Edit Article
+
+  $("#editArticle").click(function () {
+    // Ocultar la vista actual, si alguna
+    url= $(this).attr('id');
+    viewExchange(url);
+    $.ajax({
+        url: "/api/check_user_session.php",
+        success: function (success) {
+            let result = JSON.parse(success);
+            if (result.session == true) {
+                //Now send the data to php file to save item to cart using ajax
+                $.ajax({
+                    url: "/api/articles.php",
+                    contentType: false,
+                    processData: false,
+                    method: "get",
+                    success: function (success) {
+                        let articles = JSON.parse(success);
+                        if (articles.total>0) {
+                            console.log(articles);
+                        }
+                    }
+                });
+            }
+        }
+    });
 });
 
 
@@ -326,41 +358,3 @@ $(".new-size").click(function (){
       }
   });
 
-
-  // Edit Article
-
-  $("#editArticle").click(function () {
-    // Ocultar la vista actual, si alguna
-    console.log('Edit article');
-	if(currentOption){ 
-        console.log('hay una vista actualmente');
-        let currentView = getView(currentOption);
-        console.log('current option '+currentOption);
-        if(currentOption !="editArticle"){
-            console.log('La current option es diferente');
-            $("."+currentView).toggleClass('hide') ? console.log('Se ocultó la vista actual'):'';
-            $(".editArticlesView").toggleClass('hide') ? currentOption='editArticle':'';
-        }
-        $.ajax({
-            url: "/api/check_user_session.php",
-            success: function (success) {
-                let result = JSON.parse(success);
-                if (result.session == true) {
-                    //Now send the data to php file to save item to cart using ajax
-                    $.ajax({
-                        url: "/api/articles.php",
-                        contentType: false,
-                        processData: false,
-                        method: "get",
-                        success: function (success) {
-                            let articles = JSON.parse(success);
-                            if (articles.total>0) {
-                                console.log(articles);
-                            }
-                        }
-                    });
-                }
-            }
-        });
-    }
-  });

@@ -207,7 +207,7 @@ if(isLogged()){
 
                 </div>
                 <div class="editArticlesView hide">
-                    <h2>Editar los articulos actualmente guardados</h2>
+                    <h2>Editar los articulos  guardados</h2>
                 </div>
                 <div class="ordersView hide">
                     <p>Aquí puedes ver tu lista de órdenes</p>

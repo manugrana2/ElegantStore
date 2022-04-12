@@ -89,7 +89,8 @@
                             }else{
                                 $style = 'none';
                             }
-                          
+                            $permalink = $database->getRow("SELECT * FROM permalinks WHERE `userid` = ? AND  `user` = ?",[$get_products[$i]['product_id'],'products']);
+                            $permalink = $permalink['permalink'];
                            echo'
                                 <div class="col-md-3 mb-4 d-flex">
                                     <div class="card shoe__card" data-product-id="'.$get_products[$i]['product_id'].'">
@@ -106,7 +107,7 @@
                                                 </button>
                                             </span>
                                             <span class="overlay__info">
-                                                <h6 class="overlay__title"><a href="/'.$get_products[$i]['permalink'].'">'.$get_products[$i]['product_name'].'</a></h6>
+                                                <h6 class="overlay__title"><a href="/'.$permalink.'">'.$get_products[$i]['product_name'].'</a></h6>
                                                 <h6 class="overlay__price">$ <span class="shoe__card__item__price">'.number_format($get_products[$i]['product_price'],0,',','.').'</span>
                                                 </h6>
                                                 <div class="tallas '.$get_products[$i]['product_id'].'" >
@@ -139,6 +140,7 @@
         include 'includes/whatsapp-modal.php';
         include 'includes/scripts.php';
     ?>
+    
 </body>
 
 </html>
