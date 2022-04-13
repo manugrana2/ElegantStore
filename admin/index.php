@@ -1,8 +1,5 @@
 <?php
-   session_start(); //Start the session 
    include '../includes/functions.php';
-   include '../server/databaseClass.php';
-   $database = new databaseClass();
   
 ?>
 
@@ -17,7 +14,7 @@
     <title>Collapsible sidebar using Bootstrap 4</title>
 
     <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="/assets/styles/admin.css">
 
@@ -208,6 +205,31 @@ if(isLogged()){
                 </div>
                 <div class="editArticlesView hide">
                     <h2>Editar los articulos  guardados</h2>
+                    <div class="container articlesList">
+                        <div class="d-flex align-items-center loading-articles-list">
+                            <strong>Cargando...</strong>
+                            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm article-number">
+                                #
+                            </div>
+                            <div class="col-sm">
+                                Nombre
+                            </div>
+                            <div class="col-sm">
+                                Imagen
+                            </div>
+                            <div class="col-sm">
+                                Acciones
+                            </div>
+                        </div>
+                    </div>
+                    <div class="articles-pagination">
+                    </div>
+                    <div class="articles-pagination info">
+                    <p></p>
+                    </div>
                 </div>
                 <div class="ordersView hide">
                     <p>Aquí puedes ver tu lista de órdenes</p>

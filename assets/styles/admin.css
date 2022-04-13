@@ -197,6 +197,7 @@ a.article, a.article:hover {
     padding: 20px;
     min-height: 100vh;
     transition: all 0.3s;
+    min-width: 70%;
 }
 
 
@@ -257,7 +258,7 @@ a.article, a.article:hover {
     }
 }
 .hide{
-    display: none;
+    display: none!important;
 }
 
 .preview-images{
@@ -341,6 +342,61 @@ cursor:pointer;
 .talla{
     margin-bottom: 5px;
 }
-.product-url-modal{
+.product-url-modal, .link{
     color: blue;
+    text-decoration: underline;
 }
+
+.articlesList .row{
+    border: #999 1px solid;
+}
+
+.article-number{
+    max-width: 3%;
+}
+
+.row.article a{
+    padding: 10px;
+}
+
+.article-action{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.article-action a {
+    padding: 20px;
+    background-color: beige;
+    border-radius: 5px;
+    font-size: 18px;
+    color:#6d7fcc;
+    margin: 10px;
+    margin-top: 40px;
+}
+
+.articles-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   }
+.articles-pagination *{
+ padding: 10px;
+}
+
+p.product-info::first-letter{
+    text-transform: uppercase;
+}
+
+.location{
+    background-color: beige;
+}
+.articles-pagination p{
+    break-before: always;
+    display: contents;
+    position:relative; 
+}
+.articles-pagination p::before {
+    content: "\A";
+    white-space: pre;
+  }
+  

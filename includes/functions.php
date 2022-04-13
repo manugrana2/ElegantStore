@@ -1,4 +1,10 @@
 <?php
+session_start();
+include '../server/databaseClass.php';
+$database = new databaseClass();
+define('db', $database);
+
+
 function isLogged(){
     if (isset($_SESSION['userId'])) {
         // If user is logged in send true
@@ -115,4 +121,23 @@ function resizeImage($sourceImage, $targetImage, $maxWidth, $maxHeight, $quality
 		default:
 			return false;
        }
+}
+
+function getProductPermalink($id){
+    $permalink = db->getRow("SELECT * FROM permalinks WHERE `userid` = ? AND  `user` = ?",[$id,'products']);
+    if($permalink){
+        return($permalink['permalink']);
+    }else{
+        return false;
+    }
+}
+
+function getProductImages($id){
+    $product_has_img = db->getRows("SELECT * FROM media WHERE `user` = ? AND `userid` = ?",['products',$id]);
+    if($product_has_img){
+        return $product_has_img;
+    }else{
+        return false;
+    }
+
 }

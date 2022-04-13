@@ -256,3 +256,10 @@ a.article, a.article:hover {
         display: none;
     }
 }
+
+.product-images * { 
+    background-color: #fff;
+}
+.product-images{
+    background-color: #fff;
+}

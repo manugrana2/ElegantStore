@@ -1,9 +1,5 @@
 <?php
 //Incluimos la conexión a la base de datos.
-include '../server/databaseClass.php';
-$database = new databaseClass();
-
-session_start();
 require_once '../includes/functions.php';
 require_once '../server/settings.php';
  
@@ -53,21 +49,29 @@ if (!isset($_GET['page'])) {
                 foreach($resultados as $product) {
                     $articles['products'][$contador]['name']= $product["product_name"];
                     $articles['products'][$contador]['id']= $product["product_id"];
-                    $articles['products'][$contador]['active'] = $product["active"]==1?'Si':'No';
-                    $articles['products'][$contador]['permalink']=$host.$product["permalink"];
+                    $articles['products'][$contador]['active'] = $product["active"];
+                    // Get product Permalink
+                    $permalink = getProductPermalink($articles['products'][$contador]['id']);
+                    $articles['products'][$contador]['permalink']=$host.$permalink;
+                    $articles['products'][$contador]['tallas'] =json_decode($product["tallas"]);
+                    $articles['products'][$contador]['info'] =$product["product_description"];
+                    $images= getProductImages($articles['products'][$contador]['id']);
+                    if($images){
+                        $articles['products'][$contador]['images'] = $images;
 
-                ?>           
-                    <?php
+                    }
                     /**
                      * La variable $contador es la misma que iniciamos arriba con valor 1, en cada ciclo sumara 1 a este valor.
                      * $contador sirve para mostrar cuantos registros tenemos, es mas que nada una guia.
                      */
                    $contador++;
                 }
-             } else {
+                $articles['includes']= count( $articles['products']);
+
+            }else{
                 $articles['total']=0;
             }
-echo(json_encode($articles));
+              echo(json_encode($articles));
             ?>
      
   

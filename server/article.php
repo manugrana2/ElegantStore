@@ -1,8 +1,5 @@
 <?php
-    include '../server/databaseClass.php';
-    $database = new databaseClass();
-    
-    session_start();
+
     require_once '../includes/functions.php';
 
 $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -26,13 +23,13 @@ if (!empty($permalink)) {
 
             $prev_product = $database->getRow("SELECT permalink FROM products WHERE product_id = '$product_id_prev'");
         }else{
-             echo("Location: 2 404.php");
+             header("Location: 404.php");
         }
     }else{
-        echo("Location: 1 404.php");
+        header("Location: 404.php");
     }
 } else {
-    echo("Location: index.php");
+    header("Location: index.php");
 }
 ?>
 
@@ -74,12 +71,12 @@ if (!empty($permalink)) {
                             <!-- Obtener imagenes del producto -->
                             <?php
                                $userid = $product['product_id'];
-                               $product_has_img = $database->getRows("SELECT * FROM media WHERE `user` = ? AND `userid` = ?",['products',$userid]);
-                               if($product_has_img){
-                                   foreach($product_has_img as $image){
+                               $product_images = getProductImages($userid);
+                               if($product_images){
+                                   foreach($product_images as $image){
                                      echo '
                                      <span class="slide">
-                                     <img src="/uploads/images/'.$image['name'].'" alt="'.$product.' image">
+                                     <img src="/uploads/images/'.$image['name'].'" alt="'.$product['product_name'].' image">
                                      </span>
                                      ';
                                    }

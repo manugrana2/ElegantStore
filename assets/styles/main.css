@@ -661,7 +661,7 @@ main .shoe__card .shoe__card__overlay .overlay__info .overlay__price {
 .slide {
   width: 600px;
   height: 400px;
-  cursor: pointer;
+  cursor: move;
   float: left;
   display: flex;
   flex-direction: column;

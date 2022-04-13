@@ -78,18 +78,155 @@ function getView(option){
 // Cambiar view
 function viewExchange(url){
     // Ocultar vista acutal si alguna
-    console.log('Url given is '+url);
     if(currentOption){
         let view = getView(url);
         if(currentOption !=view){
-            console.log('The current view was '+currentOption);
-            console.log('View changed to '+view);
             $("."+currentOption).toggleClass('hide');
             $("."+view).toggleClass('hide') ? currentOption=view:'';
         }
         
     }
 }
+
+// Actualizar Articulo
+function updateArticle(Event){
+    Event.preventDefault();
+    console.log(Event.target+' Was clicked');
+    action = $(Event.target).data('action');
+    console.log("The action is "+action);
+    nombre= $(Event.target).data('name');
+    switch (action){
+        case 'status':
+            console.log('cambiar el status');
+            break
+        case 'del':
+            console.log('Eliminar Ariticulo');
+            Swal.fire({
+                title: '¿Seguro quieres eliminar el artículo '+nombre+'?',
+                text: "Este cambio es irreversible",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, Borrar!',
+                cancelButtonText: 'Cancelar',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  Swal.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                  )
+                }
+              })
+              
+            break
+    }
+}
+
+// Actualizar lista de productos
+function updateProductsList(page=1){
+    $('.articlesList').find('.row.article').remove();
+    $.ajax({
+        url: "/api/articles.php?page="+page,
+        contentType: false,
+        processData: false,
+        method: "get",
+        success: function (success) {
+            let articles = JSON.parse(success);
+            if (articles.total>0) {
+                //Display articles list
+                for( let i=1; i <= articles.includes;i++){
+                    var nombre = articles.products[i]['name'];
+                    let id = articles.products[i]['id'];
+                    let permalink = articles.products[i]['permalink'];
+                    let isActive = articles.products[i]['active'];
+                    let changeActive = isActive==1?0:1;
+                    let statusText =  isActive==1?'Ocultar':'Publicar';
+                    let status = '<a href="#hideArticle"  data-article-id="'+id+'"  data-name="'+nombre+'" data-new-status="'+changeActive+'" data-action="status" class="product-url-modal">'+statusText+'</a>';
+                    let delArticle = '<a href="#delArticle" data-article-id="'+id+'"  data-name="'+nombre+'" data-action="del" class="product-url-modal" style="color:red">Eliminar</a>';
+                    let editArticle = '<a href="#editArticle" data-article-id="'+id+'"  data-name="'+nombre+'" data-action="edit" class="product-url-modal">Editar</a>'
+                    let firstImage = articles.products[i]['images'][0]['name'];
+                    let product_info = articles.products[i]['info'];
+                    let productInfo = product_info.substring(0, 80);
+                    let number = i+((articles.page-1)*10);
+                    let articleItem = ' <div class="row article hide">'+
+                                            '<div class="col-sm article-number">'+
+                                            number+
+                                            '</div>'+
+                                            '<div class="col-sm">'
+                                            +'<a href="'+permalink+'"  class="product-url-modal" target="_blank">'+ nombre +'</a>'+
+                                            '<p class="product-info">'+productInfo+'</p>'+
+                                            '</div>'+
+                                            '<div class="col-sm" style="margin-bottom:15px">'+
+                                            '<img src="/uploads/images/thumbs/'+firstImage+'" style="width:80%;height:100%; display:flex;flex-aligment:center;margin-top:5px;margin-bottom:-80px">'+
+                                            '</div>'+
+                                            '<div class="col-sm article-action">'+
+                                            status+editArticle+delArticle
+                                            '</div>'+
+                                        '</div>';
+                    $(".articlesList").append(articleItem);
+                }
+                $(".article").removeClass('hide');
+                // Capture user action to edit article
+                $(".article-action a").click(function(Event){
+                    updateArticle(Event);
+                }
+                );
+                $(".loading-articles-list").addClass('hide');
+                            // create pagination links
+                $('.articles-pagination a').remove();
+                pagina = articles.page;
+                paginas =  Math.ceil(articles.total/articles.limit);
+
+                let showing =0;
+                // Pagination Backward
+                let y = pagina;
+                let x = pagina-6;
+                pagina<5?x=pagina-1:'';
+                for(let i=pagina; i < 5+pagina; i++ ){
+                    pag = y-x;
+                    if(pag>0 && pag < pagina){
+                        showing++;
+                        let link = '<a href="#page'+pag+'" data-page="'+pag+'" class="link">'+pag+'</a>';
+                        $('.articles-pagination').not(".info").append(link);
+                    }
+                    x--;
+                    if(i>paginas){
+                        break;
+                    }
+                }
+                            // Pagination Foward
+                let extraPage = 0;
+                pagina<5?extraPage=5-pagina:'';
+                for(let i=pagina; i <= 5+pagina+extraPage; i++ ){
+                    if(i>paginas){
+                        break;
+                    }
+                    selected = pagina==i?'location':'';
+                    pag = i;
+                    let link = '<a href="#page'+pag+'" data-page="'+pag+'" class="link '+selected+'">'+pag+'</a>';
+                    $('.articles-pagination').not(".info").append(link);
+                    showing++;
+
+                }
+                $('.articles-pagination a').click(
+                    function(){
+                        page=$(this).data('page');
+                        updateProductsList(page);
+                    }
+                );
+
+                // Mostrar info sobre la paginación
+                let paginationInfo = 'Mostrando página '+pagina+' de un total de '+paginas;
+                $('.articles-pagination.info p').text(paginationInfo);
+
+            }
+
+        }
+    });
+}
+
 
 // delete article size
 function rmSize(e){
@@ -125,24 +262,14 @@ $("#newArticle").click(function () {
     // Ocultar la vista actual, si alguna
     url= $(this).attr('id');
     viewExchange(url);
+    $(".loading-articles-list").removeClass('hide');
     $.ajax({
         url: "/api/check_user_session.php",
         success: function (success) {
             let result = JSON.parse(success);
             if (result.session == true) {
                 //Now send the data to php file to save item to cart using ajax
-                $.ajax({
-                    url: "/api/articles.php",
-                    contentType: false,
-                    processData: false,
-                    method: "get",
-                    success: function (success) {
-                        let articles = JSON.parse(success);
-                        if (articles.total>0) {
-                            console.log(articles);
-                        }
-                    }
-                });
+                updateProductsList();
             }
         }
     });
@@ -152,7 +279,6 @@ $("#newArticle").click(function () {
 //On New Article submit
 $("#newArticle__form").submit(function (event) {
     container = event.target;
-    console.log(container);
 	event.preventDefault();
     if(Object.keys(newArticle.tallas).length>0){
         if(Object.keys(newArticle.images).length>0){
@@ -334,8 +460,6 @@ $(".new-size").click(function (){
         $(origen).find(".disponible").val("");
         $("#"+talla).val("Talla: "+talla+" | Disponible : "+disponible);
     }
-    console.log(newArticle);
-
 });
 
   $( ".size" ).keypress(function(event) {
