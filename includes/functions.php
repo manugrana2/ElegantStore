@@ -139,5 +139,15 @@ function getProductImages($id){
     }else{
         return false;
     }
+}
 
+function getArticle($product_id=false){
+    if($product_id!=false){
+        $product =  $database->getRow("SELECT * FROM products WHERE `product_id` = ?",[$product_id]);
+        if($product){
+            return $product;
+        }else{
+            return false;
+        }
+    }
 }

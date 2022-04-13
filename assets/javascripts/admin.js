@@ -113,8 +113,8 @@ function updateArticle(Event){
               }).then((result) => {
                 if (result.isConfirmed) {
                   Swal.fire(
-                    'Deleted!',
-                    'Your file has been deleted.',
+                    'Borrado!',
+                    'El artículo ha sido borrado.',
                     'success'
                   )
                 }
