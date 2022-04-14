@@ -101,7 +101,8 @@
                                                 <small class="p-2 text-primary font-bold text-center rm-cart remove__from__cart-'.$get_products[$i]['product_id'].'" style="display:'.$quitar.';" data-product-id="'.$get_products[$i]['product_id'].'">X Quitar</small>
                                             </div>
                                             <span class="overlay__icons" style="margin-left:55px">
-                                                <button class="btn btn-icon btn-card-icon" type="button" data-product-id="'.$get_products[$i]['product_id'].'" data-product-name="'.$get_products[$i]['product_name'].'" data-product-image="'.$get_products[$i]['product_image_1'].'">
+                                                <button class="btn btn-icon btn-card-icon" type="button" data-product-id="'.$get_products[$i]['product_id'].'" data-product-name="'.$get_products[$i]['product_name'].'"
+                                                 data-product-image="'.$get_products[$i]['product_image_1'].'" data-permalink="'.$permalink.'">
                                                     <img width="80%" src="https://cdn-icons-png.flaticon.com/512/134/134937.png"
                                                         alt="" style="float:left;margin-right:12px" ><span style="margin-top:10px">Comprar</span>
                                                 </button>

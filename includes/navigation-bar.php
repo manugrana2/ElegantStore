@@ -63,11 +63,7 @@
                         <button type="button" class="btn btn-primary" data-toggle="modal"
                             data-target="#register__modal">Registrarse</button>-->
                             <button type="button" class="btn btn-primary" data-toggle="modal"
-                            data-target="#register__modal">Ropa</button>
-                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                            data-target="#register__modal">Relojes</button>
-                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                             data-target="#login__modal">Zapatos</button>
+                             data-target="#login__modal">Iniciar Sesión</button>
                             
                     </div>
                 ';

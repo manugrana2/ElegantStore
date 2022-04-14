@@ -386,15 +386,15 @@ $(".rm-cart-list").click(function () {
 	  })
 });
 
+
+
 //Comprar por Whatsapp button
-
-
-
-$(".btn-card-icon").click(function () {
+$(".btn-card-icon, .buy-product").click(function () {
 	let product_id = $(this).data("product-id");
 	let product_name = $(this).data("product-name");
-	let image_url = $(this).data("product-image")
-	let message = "Quiero comprar "+product_name +' '+image_url;
+	let permalink = $(this).data("permalink");
+	permalink = window.location.origin+'/'+permalink;
+	let message = "Quiero comprar \n "+product_name +' \n'+permalink;
 	console.log('The product id is '+product_id);
 	// check if user is logged in;
 	window.location.href = "https://wa.me/573228707697?text="+message;

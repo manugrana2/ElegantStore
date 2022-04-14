@@ -263,3 +263,7 @@ a.article, a.article:hover {
 .product-images{
     background-color: #fff;
 }
+
+.product_description::first-letter{
+ text-transform: uppercase;
+}

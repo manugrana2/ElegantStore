@@ -711,6 +711,7 @@ main .shoe__card .shoe__card__overlay .overlay__info .overlay__price {
 }
 
 .product_description{
+  font-size: medium;
   margin: 12px;
 }
 
@@ -720,6 +721,26 @@ h2.product-name{
   
 }
 
-.product_description{
-  font-size: medium;
+.product_description::first-letter{
+  text-transform: uppercase;
+ }
+
+.fa-whatsapp{
+  color: green;
+}
+.buy-product{
+  margin: 35px;
+  width: 200px;
+  padding: 10px;
+  font-size: 20px;
+  color: green;
+  border: green 1px solid;
+}
+.buy-product:hover{
+  background-color: #ea81cc;
+  border: #ea81cc 1px solid;
+}
+.buy-product:active{
+  background-color: #ea81cc;
+  border: #ea81cc 1px solid;
 }

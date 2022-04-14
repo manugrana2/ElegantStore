@@ -28,13 +28,13 @@ if (!isset($_GET['page'])) {
              * Se inicia la consulta donde seleccionamos todos los campos de la tabla personas, pero donde isActive = 1, esto lo hacemos para el manejo
              * de registros si estan activos o no.
              */
-            $resultados = $database->getRows("SELECT * FROM products WHERE 	active = 1 ");
+            $resultados = $database->getRows("SELECT * FROM products");
  
             //Contamos la cantidad de filas entregadas por la consulta, de esta forma sabemos cuantos registros fueron retornados por la consulta.
             $total_registros = count($resultados);
  
             //Generamos otra consulta la cual creara en si la paginacion, ordenando y crendo un limite en las consultas.
-            $resultados = $database->getRows("SELECT * FROM products WHERE active = '1' ORDER BY `products`.`date` ASC LIMIT $inicio, $registros");
+            $resultados = $database->getRows("SELECT * FROM products ORDER BY `products`.`date` ASC LIMIT $inicio, $registros");
  
             //Con ceil redondearemos el resultado total de las paginas 4.53213 = 5
             $total_paginas = ceil($total_registros / $registros);

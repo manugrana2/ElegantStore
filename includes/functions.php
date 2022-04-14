@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once '../server/settings.php';
 include '../server/databaseClass.php';
 $database = new databaseClass();
 define('db', $database);
@@ -141,9 +142,23 @@ function getProductImages($id){
     }
 }
 
+function getProduct($id){
+    $product =  db->getRow("SELECT * FROM products WHERE `product_id` = ?",[$id]);
+    if($product){
+        $permalink = getProductPermalink($id);
+        if($permalink){
+            $product['permalink'] = $permalink; 
+        }
+        return $product;
+    }else{
+        return false;
+    }
+
+}
+
 function getArticle($product_id=false){
     if($product_id!=false){
-        $product =  $database->getRow("SELECT * FROM products WHERE `product_id` = ?",[$product_id]);
+        $product =  db->getRow("SELECT * FROM products WHERE `product_id` = ?",[$product_id]);
         if($product){
             return $product;
         }else{

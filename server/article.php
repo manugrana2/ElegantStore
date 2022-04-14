@@ -1,7 +1,6 @@
 <?php
 
     require_once '../includes/functions.php';
-
 $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 $re = '/([\w|-]+)/m';
 $str = $_SERVER['REQUEST_URI'];
@@ -14,14 +13,10 @@ if (!empty($permalink)) {
     $product_id =  $database->getRow("SELECT * FROM permalinks WHERE `permalink` = ? AND `user` = ?",[$permalink,'products']);
     if($product_id){
         $product_id = $product_id['userid'];
-        $product =  $database->getRow("SELECT * FROM products WHERE `product_id` = ?",[$product_id]);
+        $product =  getProduct($product_id);
         if($product){
             $product_id_next = $product['product_id'] + 1;
             $product_id_prev = $product['product_id'] - 1;
-
-            $next_product = $database->getRow("SELECT permalink FROM products WHERE product_id = '$product_id_next'");
-
-            $prev_product = $database->getRow("SELECT permalink FROM products WHERE product_id = '$product_id_prev'");
         }else{
              header("Location: 404.php");
         }
@@ -50,6 +45,7 @@ if (!empty($permalink)) {
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
     <!-- Import custom CSS -->
     <link rel="stylesheet" href="assets/styles/main.css">
 </head>
@@ -107,7 +103,12 @@ if (!empty($permalink)) {
 
                     }
                     ?>
-                    </div>                 
+                    </div>    
+                    <?php             
+                    echo '<button type="button" class="buy-product" data-product-id="'.$product['product_id'].'" data-product-name="'.$product['product_name'].'"
+                     data-permalink="'.$host.$permalink.'"> <i class="fa fa-whatsapp"></i> Comprar</button>';
+
+                    ?>
                 </div>
             </div>  
             <div class="header__more">
@@ -159,7 +160,8 @@ if (!empty($permalink)) {
                             }else{
                                 $style = 'none';
                             }
-                          
+                            $permalink = $database->getRow("SELECT * FROM permalinks WHERE `userid` = ? AND  `user` = ?",[$get_products[$i]['product_id'],'products']);
+                            $permalink = $permalink['permalink'];
                            echo'
                                 <div class="col-md-3 mb-4 d-flex">
                                     <div class="card shoe__card" data-product-id="'.$get_products[$i]['product_id'].'">
@@ -170,13 +172,16 @@ if (!empty($permalink)) {
                                                 <small class="p-2 text-primary font-bold text-center rm-cart remove__from__cart-'.$get_products[$i]['product_id'].'" style="display:'.$quitar.';" data-product-id="'.$get_products[$i]['product_id'].'">X Quitar</small>
                                             </div>
                                             <span class="overlay__icons" style="margin-left:55px">
-                                                <button class="btn btn-icon btn-card-icon" type="button" data-product-id="'.$get_products[$i]['product_id'].'" data-product-name="'.$get_products[$i]['product_name'].'" data-product-image="'.$get_products[$i]['product_image_1'].'">
+                                                <button class="btn btn-icon btn-card-icon" type="button" data-product-id="'.$get_products[$i]['product_id'].'" 
+                                                data-product-name="'.$get_products[$i]['product_name'].'"
+                                                 data-product-image="'.$get_products[$i]['product_image_1'].'"
+                                                 data-permalink="'.$permalink.'">
                                                     <img width="80%" src="https://cdn-icons-png.flaticon.com/512/134/134937.png"
                                                         alt="" style="float:left;margin-right:12px" ><span style="margin-top:10px">Comprar</span>
                                                 </button>
                                             </span>
                                             <span class="overlay__info">
-                                                <h6 class="overlay__title">'.$get_products[$i]['product_name'].'</h6>
+                                                <h6 class="overlay__title"><a href="/'.$permalink.'">'.$get_products[$i]['product_name'].'</a></h6>
                                                 <h6 class="overlay__price">$ <span class="shoe__card__item__price">'.number_format($get_products[$i]['product_price'],0,',','.').'</span>
                                                 </h6>
                                                 <div class="tallas '.$get_products[$i]['product_id'].'" >

@@ -1,4 +1,5 @@
 let currentOption = 'welcome';
+var page = 1;
 let viewsClasses = {
     "welcome": "welcomeView",
     "newArticle": "newArticleView",
@@ -93,11 +94,43 @@ function updateArticle(Event){
     Event.preventDefault();
     console.log(Event.target+' Was clicked');
     action = $(Event.target).data('action');
+    id = $(Event.target).data('article-id');
     console.log("The action is "+action);
     nombre= $(Event.target).data('name');
+    let editArticle = {};
     switch (action){
         case 'status':
-            console.log('cambiar el status');
+            newStatus = $(Event.target).data('new-status');
+            editArticle['active'] = newStatus;
+            console.log(editArticle);
+            $.ajax({
+                url: "/api/check_user_session.php",
+                success: function (success) {
+                    let result = JSON.parse(success);
+                    if (result.session == true) {
+                        editArticle = JSON.stringify(editArticle);
+                        //Now send the data to php file to save item to cart using ajax
+                        $.ajax({
+                            url: "/api/updateArticle.php",
+                            method: "get",
+                            data: {"id": id, "editArticle": editArticle},
+                            success: function (success) {
+                                let result = JSON.parse(success);
+                                console.log(result.status);
+                                if (result.status == 200) {
+                                    //Actualizar el botón del status
+                                    let action  = newStatus==0?'Ocultó': 'Publicó';
+                                    let message = "Se "+action+ ' el artículo';
+                                    Swal.fire(message);
+                                    updateProductsList(page);
+                                }
+                            }
+                        });
+                    }else{
+                        Swal.fire('No podemos hacer eso. Debes primero iniciar sesion.');
+                    }
+                }
+            });
             break
         case 'del':
             console.log('Eliminar Ariticulo');
@@ -112,20 +145,45 @@ function updateArticle(Event){
                 cancelButtonText: 'Cancelar',
               }).then((result) => {
                 if (result.isConfirmed) {
-                  Swal.fire(
-                    'Borrado!',
-                    'El artículo ha sido borrado.',
-                    'success'
-                  )
-                }
-              })
-              
+                    //Now send the data to php file to update the article
+                    $.ajax({
+                        url: "/api/check_user_session.php",
+                        success: function (success) {
+                            let result = JSON.parse(success);
+                            if (result.session == true) {
+                                editArticle = JSON.stringify(editArticle);
+                                //Now send the data to php file to save item to cart using ajax
+                                $.ajax({
+                                    url: "/api/updateArticle.php",
+                                    method: "get",
+                                    data: {"del": id},
+                                    success: function (success) {
+                                        let result = JSON.parse(success);
+                                        console.log(result.status);
+                                        if (result.deleted == true) {
+                                            //Actualizar el botón del status
+                                            Swal.fire(
+                                                'Borrado!',
+                                                'El artículo ha sido borrado.',
+                                                'success'
+                                                )
+                                            updateProductsList(page);
+                                        }
+                                    }
+                                });
+                            }else{
+                                Swal.fire('No podemos hacer eso. Debes primero iniciar sesion.');
+                            }
+                        }
+                    });
+            }
+            });
             break
     }
 }
 
 // Actualizar lista de productos
-function updateProductsList(page=1){
+function updateProductsList(){
     $('.articlesList').find('.row.article').remove();
     $.ajax({
         url: "/api/articles.php?page="+page,
@@ -244,6 +302,7 @@ $("body").click(function () {
             $(".welcome").toggleClass('hide');
         }
     }
+    console.log(page);
 });
 
 // Menu Lateral Eventos
